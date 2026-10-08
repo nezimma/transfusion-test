@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Трансфузиология Тест</title>
+<style>
+/* Layout: single narrow column, one question per screen, sticky progress bar on top */
+:root{
+  --bg:#f6f3f2; --card:#ffffff; --fg:#241b1d; --muted:#76696c; --line:#e3dbd9;
+  --accent:#9b1c31; --accent-fg:#ffffff;
+  --ok:#17794a; --ok-bg:#e1f4ea; --bad:#b3261e; --bad-bg:#fbe6e4; --miss-bg:#fff3d6; --miss:#8a5a00;
+  --display:'Newsreader',Georgia,serif; --body:'Onest',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#171213; --card:#221b1d; --fg:#f2eaeb; --muted:#a39598; --line:#3a2f32;
+  --accent:#e0566c; --accent-fg:#1a0d10;
+  --ok:#59d197; --ok-bg:#12301f; --bad:#ff8a80; --bad-bg:#3a1714; --miss-bg:#38290a; --miss:#f0c060; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#171213; --card:#221b1d; --fg:#f2eaeb; --muted:#a39598; --line:#3a2f32;
+  --accent:#e0566c; --accent-fg:#1a0d10;
+  --ok:#59d197; --ok-bg:#12301f; --bad:#ff8a80; --bad-bg:#3a1714; --miss-bg:#38290a; --miss:#f0c060; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:19px;line-height:1.45;padding-inline:16px;padding-block:20px 40px}
+.wrap{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+h1{font-family:var(--display);font-weight:600;font-size:1.7rem;line-height:1.15;margin:0;text-wrap:balance}
+.sub{color:var(--muted);margin:0}
+.variants{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.vbtn{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 12px;font:inherit;color:var(--fg);text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:4px}
+.vbtn b{font-family:var(--display);font-size:1.3rem}
+.vbtn span{color:var(--muted);font-size:.85rem}
+.vbtn:active{border-color:var(--accent)}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.top{display:flex;align-items:center;gap:12px}
+.back{background:none;border:0;color:var(--muted);font:inherit;padding:6px 0;cursor:pointer}
+.bar{flex:1;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .25s}
+.cnt{color:var(--muted);font-variant-numeric:tabular-nums;font-size:.9rem;white-space:nowrap}
+.q{font-family:var(--display);font-size:1.3rem;line-height:1.3;font-weight:600;margin:0;text-wrap:pretty}
+.hint{color:var(--muted);font-size:.85rem;margin:0}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:16px 14px;font:inherit;color:var(--fg);cursor:pointer;min-width:0}
+.opt .l{flex:none;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--muted);display:grid;place-items:center;font-size:.8rem;font-weight:600;color:var(--muted);margin-top:1px}
+.opt .t{min-width:0;overflow-wrap:anywhere}
+.opt.sel{border-color:var(--accent)}
+.opt.sel .l{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.opt.ok{background:var(--ok-bg);border-color:var(--ok)}
+.opt.ok .l{background:var(--ok);border-color:var(--ok);color:var(--bg)}
+.opt.bad{background:var(--bad-bg);border-color:var(--bad)}
+.opt.bad .l{background:var(--bad);border-color:var(--bad);color:var(--bg)}
+.opt.miss{background:var(--miss-bg);border-color:var(--miss)}
+.opt.miss .l{border-color:var(--miss);color:var(--miss)}
+.opt[disabled]{cursor:default}
+.verdict{border-radius:10px;padding:12px 14px;font-weight:600}
+.verdict.ok{background:var(--ok-bg);color:var(--ok)}
+.verdict.bad{background:var(--bad-bg);color:var(--bad)}
+.verdict small{display:block;font-weight:400;color:var(--fg);margin-top:2px}
+.cta{background:var(--accent);color:var(--accent-fg);border:0;border-radius:10px;padding:14px;font:inherit;font-weight:600;cursor:pointer;width:100%}
+.cta.alt{background:var(--card);color:var(--fg);border:1px solid var(--line)}
+.cta[disabled]{opacity:.4;cursor:default}
+.score{font-family:var(--display);font-size:3.2rem;line-height:1;margin:0;font-variant-numeric:tabular-nums}
+.review{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+.review li{display:flex;gap:10px;align-items:baseline;font-size:.95rem;padding:8px 0;border-bottom:1px solid var(--line)}
+.review b{flex:none;width:2ch;font-variant-numeric:tabular-nums}
+.review .m{flex:none;font-weight:700}
+.review .m.ok{color:var(--ok)}.review .m.bad{color:var(--bad)}
+.review span.s{min-width:0;overflow-wrap:anywhere}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:wght@500;600&family=Onest:wght@400;600&display=swap">
+
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+// answers: indexes into o[]; two or more indexes = several correct answers
+var DATA = {
+1:[
+{q:"Что такое трансфузия?",o:["медицинское вмешательство, предполагающее парентеральное введение пациенту (переливание) крови (донорской и (или) аутологичной), ее компонентов (в том числе реинфузия)","медицинское вмешательство, предполагающее удаление крови из кровеносного русла пациента","медицинское вмешательство, предполагающее парентеральное введение пациенту органических и неорганических лекарственных средств"],a:[0]},
+{q:"Донорские эритроциты после взятия из холодильника выдерживают при комнатной температуре до переливания:",o:["в течение рабочего дня","один час","полчаса","два часа"],a:[2]},
+{q:"Флаконы с кровью II группы маркируются полосой:",o:["бесцветной","красной","желтой","синей"],a:[3]},
+{q:"Сколько записей показателей гемодинамики в истории болезни (трансфузионном листе) реципиента должно быть при переливании одного контейнера донорских эритроцитов:",o:["четыре","две","шесть","пять"],a:[0]},
+{q:"Для В (III) группы крови характерно:",o:["наличие на эритроцитах антигена А, в сыворотке – анти-В антител","наличие на эритроцитах антигена В, в сыворотке – анти-А антитела","отсутствие на эритроцитах А и В антигенов, наличие в сыворотке – анти-А и анти-В антител","наличие на эритроцитах антигенов А и В, отсутствие в сыворотке антител"],a:[1]},
+{q:"Показания к назначению трансфузии донорских тромбоцитов являются:",o:["тромбастения Гланцмана","тромбоцитопения менее 10*10⁹/л","тромбоцитопения менее 20*10⁹/л без геморрагического синдрома","тромбоцитопения менее 40*10⁹/л с геморрагическим синдромом"],a:[1,3]},
+{q:"Для подтверждения аутоиммунного характера гемолитической анемии необходимо обязательно выполнить следующие серологические исследования:",o:["реакцию Штеффена","реакцию агглютинации в солевой среде","непрямую пробу Кумбса","прямую пробу Кумбса"],a:[3]},
+{q:"Нормальное значение концентрации гемоглобина у мужчин:",o:["100-120 г/л","160-180 г/л","130-170 г/л","100-140 г/л"],a:[2]},
+{q:"Клинические признаки, характерные для железодефицитной анемии (наиболее полный ответ):",o:["«извращение вкуса», спленомегалия, желтушность склер","«извращение вкуса», слабость, головокружение, сухость кожи, спленомегалия, желтушность склер, субфебрильная температура тела","слабость, головокружение, сухость кожи, желтушность склер, субфебрильная температура тела","слабость, головокружение"],a:[1]},
+{q:"Специфическая агглютинация – это:",o:["взаимодействие эритроцитов с антителами, специфичность которых не соответствует антигенам эритроцитов","реакция агглютинации исследуемых эритроцитов с собственной сывороткой индивида","взаимодействие эритроцитов с антителами, специфичность которых соответствует антигену, находящемуся на эритроцитах"],a:[2]}
+],
+2:[
+{q:"Альбумин выпускается в виде:",o:["10%, 15%, 20% раствора","5%, 10%, 15% раствора","20%, 25%, 30% раствора","5%, 10%, 25% раствора"],a:[3]},
+{q:"После переливания крови пробирки с кровью пациента и остатки трансфузионной среды следует хранить в течение:",o:["в течение рабочего дня","2-ух суток","полчаса","24 часов"],a:[1]},
+{q:"Флаконы с кровью III группы маркируются полосой:",o:["бесцветной","красной","желтой","синей"],a:[1]},
+{q:"Иммуногенность антигенов заключается:",o:["в способности вызывать выработку цитокинов","в способности являться рецепторами бактерий, вирусов, паразитов","в способности вызывать выработку антител","в способности участвовать в адгезии различных молекул"],a:[2]},
+{q:"Для АВ (IV) группы крови характерно:",o:["наличие на эритроцитах антигена А, в сыворотке – анти-В антител","наличие на эритроцитах антигена В, в сыворотке – анти-А антитела","отсутствие на эритроцитах А и В антигенов, наличие в сыворотке – анти-А и анти-В антител","наличие на эритроцитах антигенов А и В, отсутствие в сыворотке антител"],a:[3]},
+{q:"Резус-принадлежность определяется по наличию/отсутствию на эритроцитах:",o:["антигена А","антигена В","антигена D","антигена А и В"],a:[2]},
+{q:"При определении группы крови системы АВО с помощью моноклональных антител на плоскости температура в помещении должна быть:",o:["15-20° C","15-30° C","18-25° C","10-15° C"],a:[2]},
+{q:"Нормальное значение концентрации гемоглобина у женщин:",o:["100-120 г/л","80-100 г/л","120-160 г/л","100-140 г/л"],a:[2]},
+{q:"Показания к назначению свежезамороженной плазмы (СЗП):",o:["отек мозга","тромботическая тромбоцитопеническая пурпура","гипопротеинемия","дефицит факторов свертывания крови"],a:[1,3]},
+{q:"Неспецифическая агглютинация – это:",o:["взаимодействие эритроцитов с антителами, специфичность которых не соответствует антигенам эритроцитов","реакция агглютинации исследуемых эритроцитов с собственной сывороткой индивида","взаимодействие эритроцитов с антителами, специфичность которых соответствует антигену, находящемуся на эритроцитах"],a:[0]}
+],
+3:[
+{q:"Нормальное содержание тромбоцитов в периферической крови:",o:["180-300*10⁹/л","160-400*10⁹/л","100-300*10⁹/л","150-450*10⁹/л"],a:[3]},
+{q:"Реципиент в стационаре после гемотрансфузии должен наблюдаться в течение:",o:["30 минут","2 часов","1 часа","24 часов"],a:[1]},
+{q:"Флаконы с кровью I группы маркируются полосой:",o:["бесцветной","красной","желтой","синей"],a:[0]},
+{q:"Клиническое значение антител определяется:",o:["устойчивостью к прогреванию","способностью подвергаться инактивации при 56°C","способностью проявлять свои свойства при температуре от 15 до 25°C","способностью вызывать разрушение эритроцитов, несущих на поверхности соответствующий антиген"],a:[3]},
+{q:"Для А (II) группы крови характерно:",o:["наличие на эритроцитах антигена А, в сыворотке – анти-В антител","наличие на эритроцитах антигена В, в сыворотке – анти-А антитела","отсутствие на эритроцитах А и В антигенов, наличие в сыворотке – анти-А и анти-В антител","наличие на эритроцитах антигенов А и В, отсутствие в сыворотке антител"],a:[0]},
+{q:"Непрямая проба Кумбса позволяет определить:",o:["антитела или компоненты комплемента, фиксированные на поверхности эритроцитов","антигены на поверхности эритроцитов","антиэритроцитарные антитела в сыворотке крови","антитела и антигены на поверхности эритроцитов"],a:[2]},
+{q:"При определении группы крови системы АВО с помощью моноклональных антител на плоскости интерпретировать результат можно:",o:["не ранее 5 мин","не ранее 3 мин., после добавления 0,9% р-ра NaCl","через 30 сек","сразу после наступления агглютинации"],a:[0]},
+{q:"Клинические признаки тромбоцитопении появляются при количестве тромбоцитов:",o:["менее 80*10⁹/л","менее 100*10⁹/л","менее 50*10⁹/л","менее 300*10⁹/л"],a:[2]},
+{q:"Наиболее эффективными средствами купирования уремической интоксикации при гемолитическом посттрансфузионном осложнении следует считать:",o:["гемосорбцию","гемодиализ","лимфосорбцию","плазмаферез"],a:[1,3]},
+{q:"Тромбоцитарный компонент крови (ТКК) хранят:",o:["в холодильнике при температуре +4…+8 °C не более 48 часов","при температуре не выше +18 °C не более 48 часов в тромбомиксере","при температуре 22 ± 2 °C в тромбомиксере от 24 часов до 7 суток в зависимости от условий заготовки и качества контейнеров","в холодильнике при температуре +4…+8 °C не более 24 часов"],a:[2]}
+],
+4:[
+{q:"Документ, регламентирующий порядок медицинского применения крови и (или) ее компонентов в организациях здравоохранения:",o:["постановление МЗ РБ № 92","постановление МЗ РБ № 80","постановление МЗ РБ № 90","постановление МЗ РБ № 82"],a:[0]},
+{q:"Процент людей с резус-положительной кровью составляет приблизительно:",o:["15 %","85 %","50 %","99 %"],a:[1]},
+{q:"Флаконы с кровью IV группы маркируются полосой:",o:["бесцветной","красной","желтой","синей"],a:[2]},
+{q:"При определении группы крови системы АВО с помощью моноклональных антител на плоскости соотношение реагента и исследуемой сыворотки должно быть примерно:",o:["1:20","1:10","1:1","1:5"],a:[1]},
+{q:"Для О (I) группы крови характерно:",o:["наличие на эритроцитах антигена А, в сыворотке – анти-В антител","наличие на эритроцитах антигена В, в сыворотке – анти-А антитела","отсутствие на эритроцитах А и В антигенов, наличие в сыворотке – анти-А и анти-В антител","наличие на эритроцитах антигенов А и В, отсутствие в сыворотке антител"],a:[2]},
+{q:"Прямая проба Кумбса позволяет определить:",o:["антитела или компоненты комплемента, фиксированные на поверхности эритроцитов","антигены на поверхности эритроцитов","антиэритроцитарные антитела в сыворотке крови","антитела и антигены на поверхности эритроцитов"],a:[0]},
+{q:"В каких случаях ставится «Контроль специфичности» при определении группы крови системы АВО с помощью моноклональных антител на плоскости:",o:["в случае, когда произошла агглютинация и с анти-А, и с анти-В моноклонами","в случае, когда нигде не произошла агглютинация","в любом случае"],a:[0]},
+{q:"Показание к переливанию лейкоцитных компонентов крови (гранулоцитов) является:",o:["абсолютная нейтропения (количество лейкоцитов в крови менее 1,0*10⁹/л)","терминальное состояние пациента","абсолютная нейтропения (количество лейкоцитов в крови менее 0,5*10⁹/л)","тяжелая дыхательная недостаточность"],a:[2]},
+{q:"Разрешается переливание свежезамороженной плазмы (СЗП) (выбрать наиболее полный ответ):",o:["с учетом групповой и резус-принадлежности","без учета групповой и резус-принадлежности","с учетом групповой и без учета резус-принадлежности за исключением резус-отрицательных женщин детородного возраста","с учетом групповой и без резус-принадлежности"],a:[2]},
+{q:"Для выявления антиэритроцитарных антител перед гемотрансфузией и через 3 дня после гемотрансфузии необходимо назначить:",o:["прямую пробу Кумбса","непрямую пробу Кумбса","прямую и непрямую пробу Кумбса","титр изогемагглютининов"],a:[1]}
+]};
+var LET="АБВГ";
+var app=document.getElementById('app');
+var st=null;
+
+function el(h){var d=document.createElement('div');d.innerHTML=h;return d.firstElementChild}
+function esc(s){return s.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
+function same(a,b){return a.length===b.length&&a.every(function(x){return b.indexOf(x)>-1})}
+
+function home(){
+  st=null; app.innerHTML='';
+  app.appendChild(el('<div style="display:flex;flex-direction:column;gap:6px"><h1>Основные вопросы клинической трансфузиологии</h1><p class="sub">Выберите вариант. После ответа сразу видно, верно или нет.</p></div>'));
+  var g=el('<div class="variants"></div>');
+  [1,2,3,4].forEach(function(v){
+    var b=el('<button class="vbtn"><b>Вариант '+v+'</b><span>'+DATA[v].length+' вопросов</span></button>');
+    b.onclick=function(){start(v,DATA[v].map(function(_,i){return i}))};
+    g.appendChild(b);
+  });
+  app.appendChild(g);
+  var all=el('<button class="cta alt">Все варианты вперемешку (40 вопросов)</button>');
+  all.onclick=function(){
+    var ids=[];[1,2,3,4].forEach(function(v){DATA[v].forEach(function(_,i){ids.push(v+':'+i)})});
+    for(var i=ids.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=ids[i];ids[i]=ids[j];ids[j]=t}
+    start(0,ids);
+  };
+  app.appendChild(all);
+}
+
+function qOf(id){
+  if(st.v) return DATA[st.v][id];
+  var p=String(id).split(':');return DATA[p[0]][+p[1]];
+}
+
+function start(v,ids){
+  st={v:v,ids:ids,i:0,res:[],sel:[],done:false};
+  render();
+}
+
+function render(){
+  var q=qOf(st.ids[st.i]), multi=q.a.length>1, n=st.ids.length;
+  app.innerHTML='';
+  var top=el('<div class="top"><button class="back">← Меню</button><div class="bar"><i></i></div><span class="cnt">'+(st.i+1)+' / '+n+'</span></div>');
+  top.querySelector('.back').onclick=home;
+  top.querySelector('.bar i').style.width=(st.i/n*100)+'%';
+  app.appendChild(top);
+  app.appendChild(el('<h2 class="q">'+(st.v?'':'')+esc(q.q)+'</h2>'));
+  if(multi) app.appendChild(el('<p class="hint">Несколько верных ответов. Отметьте все и нажмите «Проверить».</p>'));
+  var box=el('<div class="opts"></div>');
+  var btns=q.o.map(function(t,k){
+    var b=el('<button class="opt"><span class="l">'+LET[k]+'</span><span class="t">'+esc(t)+'</span></button>');
+    b.onclick=function(){
+      if(st.done) return;
+      if(multi){
+        var p=st.sel.indexOf(k);
+        if(p>-1)st.sel.splice(p,1);else st.sel.push(k);
+        b.classList.toggle('sel');
+        chk.disabled=!st.sel.length;
+      } else { st.sel=[k]; finish(q,btns,box); }
+    };
+    box.appendChild(b);return b;
+  });
+  app.appendChild(box);
+  var chk=el('<button class="cta">Проверить</button>');
+  chk.disabled=true;
+  chk.onclick=function(){finish(q,btns,box)};
+  if(multi) app.appendChild(chk);
+  window.scrollTo(0,0);
+}
+
+function finish(q,btns,box){
+  st.done=true;
+  var ok=same(st.sel,q.a);
+  st.res.push(ok);
+  btns.forEach(function(b,k){
+    b.disabled=true;b.classList.remove('sel');
+    var right=q.a.indexOf(k)>-1, chosen=st.sel.indexOf(k)>-1;
+    if(right&&chosen)b.classList.add('ok');
+    else if(chosen)b.classList.add('bad');
+    else if(right)b.classList.add(ok?'ok':'miss');
+  });
+  var txt=ok?'Верно':'Неверно';
+  var det='';
+  if(!ok){det='Правильно: '+q.a.map(function(k){return LET[k]}).join(', ')}
+  var v=el('<div class="verdict '+(ok?'ok':'bad')+'">'+txt+(det?'<small>'+det+'</small>':'')+'</div>');
+  var last=st.i===st.ids.length-1;
+  var nx=el('<button class="cta">'+(last?'Показать результат':'Дальше')+'</button>');
+  nx.onclick=function(){
+    if(last){result()}else{st.i++;st.sel=[];st.done=false;render()}
+  };
+  var anchor=app.querySelector('.cta');
+  if(anchor)anchor.remove();
+  app.appendChild(v);app.appendChild(nx);
+  v.scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+
+function result(){
+  var n=st.ids.length, c=st.res.filter(Boolean).length;
+  app.innerHTML='';
+  app.appendChild(el('<div style="display:flex;flex-direction:column;gap:6px"><p class="sub">Результат</p><p class="score">'+c+' из '+n+'</p><p class="sub">'+Math.round(c/n*100)+'% верных ответов</p></div>'));
+  var bad=[];
+  var ul=el('<ul class="review"></ul>');
+  st.ids.forEach(function(id,i){
+    var q=qOf(id), ok=st.res[i];
+    if(!ok)bad.push(id);
+    var ans=q.a.map(function(k){return LET[k]+') '+q.o[k]}).join('; ');
+    ul.appendChild(el('<li><b>'+(i+1)+'</b><span class="m '+(ok?'ok':'bad')+'">'+(ok?'✓':'✗')+'</span><span class="s">'+esc(q.q)+'<br><span class="hint">'+esc(ans)+'</span></span></li>'));
+  });
+  if(bad.length){
+    var r=el('<button class="cta">Повторить ошибки ('+bad.length+')</button>');
+    var v=st.v;
+    r.onclick=function(){start(v,bad)};
+    app.appendChild(r);
+  }
+  var again=el('<button class="cta alt">В меню</button>');
+  again.onclick=home;
+  app.appendChild(again);
+  app.appendChild(ul);
+  window.scrollTo(0,0);
+}
+home();
+</script>
+
+</body>
+</html>
